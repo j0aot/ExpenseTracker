@@ -5,7 +5,7 @@ import Dashboard from '../components/Dashboard/Dashboard';
 import TransactionForm from '../components/TransactionForm/TransactionForm';
 import TransactionList from '../components/TransactionList/TransactionList';
 
-const Home = ({ showToast }) => {
+const Home = () => {
 	const [transactions, setTransactions] = useState([]);
 	const [balance, setBalance] = useState(0);
 	const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
@@ -24,11 +24,6 @@ const Home = ({ showToast }) => {
 		await addTransaction(newTransaction);
 		const data = await fetchTransactions();
 		setTransactions(data.filter(t => t.type === 'expense'));
-		if (newTransaction.type === 'expense') {
-			showToast && showToast('Despesa adicionada!');
-		} else if (newTransaction.type === 'income') {
-			showToast && showToast('Receita adicionada!');
-		}
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 		setBalance(saldo);
 	};
