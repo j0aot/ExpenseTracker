@@ -18,15 +18,15 @@ mongoose
 	.then(() => console.log('MongoDB connected'))
 	.catch(err => console.error(err));
 
-// Middleware de autenticação
+// Middleware de autenticação e rotas
 app.use('/transactions', ClerkExpressRequireAuth(), transactionsRouter);
 
-
+// Rota raiz para teste
 app.get('/', (req, res) => {
 	res.send('API FinanceApp');
 });
 
-
+// Handler para Vercel Serverless Function
 export default function handler(req, res) {
 	return app(req, res);
 }
