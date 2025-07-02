@@ -1,3 +1,3 @@
-const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
-module.exports = ClerkExpressRequireAuth();
+export default ClerkExpressRequireAuth();
