@@ -6,8 +6,50 @@ import ProfilePage from './pages/ProfilePage';
 import './index.css';
 import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 
+// Toast component
+function Toast({ message, onClose }) {
+	if (!message) return null;
+	return (
+		<div
+			style={{
+				position: 'fixed',
+				top: 20,
+				right: 20,
+				background: '#333',
+				color: '#fff',
+				padding: '16px 24px',
+				borderRadius: 8,
+				boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+				zIndex: 9999,
+				fontWeight: 'bold',
+			}}
+		>
+			{message}
+			<button
+				onClick={onClose}
+				style={{
+					marginLeft: 16,
+					background: 'transparent',
+					border: 'none',
+					color: '#fff',
+					cursor: 'pointer',
+					fontSize: 18,
+				}}
+			>
+				×
+			</button>
+		</div>
+	);
+}
+
 const App = () => {
 	const [darkMode, setDarkMode] = useState(false);
+	const [toast, setToast] = useState('');
+
+	const showToast = msg => {
+		setToast(msg);
+		setTimeout(() => setToast(''), 2500);
+	};
 
 	useEffect(() => {
 		if (darkMode) {
@@ -24,13 +66,14 @@ const App = () => {
 					{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
 				</button>
 			</div>
+			<Toast message={toast} onClose={() => setToast('')} />
 			<Routes>
 				<Route
 					path='/'
 					element={
 						<>
 							<SignedIn>
-								<Home />
+								<Home showToast={showToast} />
 							</SignedIn>
 							<SignedOut>
 								<RedirectToSignIn />
