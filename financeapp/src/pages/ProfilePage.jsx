@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import './ProfilePage.css';
@@ -7,17 +7,16 @@ const ProfilePage = () => {
 	const navigate = useNavigate();
 	const { user, isLoaded } = useUser();
 
-	// Estado para controlar o formulário de edição
 	const [isEditing, setIsEditing] = useState(false);
 	const [formData, setFormData] = useState({
-		name: '',
+		username: '',
 		email: '',
 	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (user) {
 			setFormData({
-				name: user.fullName || '',
+				username: user.username || '',
 				email: user.primaryEmailAddress?.emailAddress || '',
 			});
 		}
@@ -33,9 +32,9 @@ const ProfilePage = () => {
 
 	const handleSave = async () => {
 		if (user) {
-			await user.update({
-				fullName: formData.name,
-			});
+			if (formData.username !== user.username) {
+				await user.update({ username: formData.username });
+			}
 			if (formData.email !== user.primaryEmailAddress?.emailAddress) {
 				await user.createEmailAddress({ email: formData.email });
 				// Opcional: pode pedir verificação do novo email
@@ -47,7 +46,7 @@ const ProfilePage = () => {
 	const handleCancel = () => {
 		if (user) {
 			setFormData({
-				name: user.fullName || '',
+				username: user.username || '',
 				email: user.primaryEmailAddress?.emailAddress || '',
 			});
 		}
@@ -65,8 +64,8 @@ const ProfilePage = () => {
 				{isEditing ? (
 					<>
 						<div className='form-group'>
-							<label>Nome:</label>
-							<input type='text' name='name' value={formData.name} onChange={handleChange} />
+							<label>Nome de utilizador:</label>
+							<input type='text' name='username' value={formData.username} onChange={handleChange} />
 						</div>
 						<div className='form-group'>
 							<label>Email:</label>
@@ -84,13 +83,13 @@ const ProfilePage = () => {
 				) : (
 					<>
 						<p>
-							<strong>Nome:</strong> {user.fullName}
+							<strong>Nome de utilizador:</strong> {user.username}
 						</p>
 						<p>
 							<strong>Email:</strong> {user.primaryEmailAddress?.emailAddress}
 						</p>
 						<p>
-							<strong>ID:</strong> {user.id}
+							<strong>Data de Registo:</strong> {user.createdAt ? new Date(user.createdAt).toLocaleDateString('pt-PT') : ''}
 						</p>
 						<div className='profile-actions'>
 							<button onClick={() => setIsEditing(true)} className='edit-btn'>
