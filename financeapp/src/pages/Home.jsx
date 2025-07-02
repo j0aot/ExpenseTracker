@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTransactionsApi } from '../hooks/useTransactionsApi';
 import Navbar from '../components/Navbar/Navbar';
 import Dashboard from '../components/Dashboard/Dashboard';
 import TransactionForm from '../components/TransactionForm/TransactionForm';
@@ -7,49 +8,51 @@ import TransactionList from '../components/TransactionList/TransactionList';
 const Home = () => {
 	const [transactions, setTransactions] = useState([]);
 	const [balance, setBalance] = useState(0);
+	const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
 
-	const addTransaction = newTransaction => {
-		if (newTransaction.type === 'income') {
-			setBalance(prevBalance => prevBalance + parseFloat(newTransaction.amount));
-		} else if (newTransaction.type === 'expense') {
-			setBalance(prevBalance => prevBalance - parseFloat(newTransaction.amount));
-			setTransactions(prevTransactions => [...prevTransactions, newTransaction]);
+	useEffect(() => {
+		fetchTransactions().then(data => {
+			setTransactions(data.filter(t => t.type === 'expense'));
+			// Calcula o saldo: receitas - despesas
+			const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+			setBalance(saldo);
+		});
+	}, []);
+
+	const handleAddTransaction = async newTransaction => {
+		const saved = await addTransaction(newTransaction);
+		if (saved.type === 'expense') {
+			setTransactions(prev => [...prev, saved]);
 		}
+		setBalance(prev => (saved.type === 'income' ? prev + parseFloat(saved.amount) : prev - parseFloat(saved.amount)));
 	};
 
-	const editTransaction = (id, updatedTransaction) => {
-		setTransactions(prevTransactions => prevTransactions.map(transaction => (transaction.id === id ? updatedTransaction : transaction)));
-
-		// Atualizar o saldo
-		const originalTransaction = transactions.find(t => t.id === id);
-		if (originalTransaction) {
-			if (originalTransaction.type === 'expense') {
-				setBalance(prevBalance => prevBalance + parseFloat(originalTransaction.amount));
-			}
-
-			if (updatedTransaction.type === 'expense') {
-				setBalance(prevBalance => prevBalance - parseFloat(updatedTransaction.amount));
-			}
-		}
+	const handleEditTransaction = async (id, updatedTransaction) => {
+		const updated = await editTransaction(id, updatedTransaction);
+		setTransactions(prev => prev.map(t => (t._id === id ? updated : t)));
+		// Recomenda-se recarregar todas as transações e recalcular saldo após edição
+		const data = await fetchTransactions();
+		setTransactions(data.filter(t => t.type === 'expense'));
+		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+		setBalance(saldo);
 	};
 
-	const removeTransaction = id => {
-		const transactionToRemove = transactions.find(t => t.id === id);
-		if (transactionToRemove && transactionToRemove.type === 'expense') {
-			setBalance(prevBalance => prevBalance + parseFloat(transactionToRemove.amount));
-		}
-		setTransactions(prevTransactions => prevTransactions.filter(transaction => transaction.id !== id));
+	const handleRemoveTransaction = async id => {
+		await removeTransaction(id);
+		const data = await fetchTransactions();
+		setTransactions(data.filter(t => t.type === 'expense'));
+		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+		setBalance(saldo);
 	};
 
 	return (
 		<div className='app-container'>
 			<Navbar />
-
 			<main className='main-content'>
 				<div className='content-wrapper'>
 					<Dashboard balance={balance} />
-					<TransactionForm addTransaction={addTransaction} />
-					<TransactionList transactions={transactions} editTransaction={editTransaction} removeTransaction={removeTransaction} />
+					<TransactionForm addTransaction={handleAddTransaction} />
+					<TransactionList transactions={transactions} editTransaction={handleEditTransaction} removeTransaction={handleRemoveTransaction} />
 				</div>
 			</main>
 		</div>

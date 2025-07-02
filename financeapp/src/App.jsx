@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import './index.css';
+import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 
 const App = () => {
 	const [darkMode, setDarkMode] = useState(false);
@@ -24,9 +25,33 @@ const App = () => {
 				</button>
 			</div>
 			<Routes>
+				<Route
+					path='/'
+					element={
+						<>
+							<SignedIn>
+								<Home />
+							</SignedIn>
+							<SignedOut>
+								<RedirectToSignIn />
+							</SignedOut>
+						</>
+					}
+				/>
 				<Route path='/login' element={<LoginPage />} />
-				<Route path='/' element={<Home />} />
-				<Route path='/profile' element={<ProfilePage />} />
+				<Route
+					path='/profile'
+					element={
+						<>
+							<SignedIn>
+								<ProfilePage />
+							</SignedIn>
+							<SignedOut>
+								<RedirectToSignIn />
+							</SignedOut>
+						</>
+					}
+				/>
 			</Routes>
 		</Router>
 	);
