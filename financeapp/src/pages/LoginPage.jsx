@@ -1,12 +1,12 @@
 import React from 'react';
-import Login from '../components/Auth/Login'; // Ensure the correct path to the Login component
+import { SignIn } from '@clerk/clerk-react';
 
 const LoginPage = () => {
-    return (
-        <div className='login-page'>
-            <Login />
-        </div>
-    );
+	return (
+		<div className='login-page'>
+			<SignIn />
+		</div>
+	);
 };
 
 export default LoginPage;
