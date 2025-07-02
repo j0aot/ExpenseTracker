@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useTransactionsApi } from '../hooks/useTransactionsApi';
 import Navbar from '../components/Navbar/Navbar';
 import Dashboard from '../components/Dashboard/Dashboard';
 import TransactionForm from '../components/TransactionForm/TransactionForm';
 import TransactionList from '../components/TransactionList/TransactionList';
+import { useTransactionsApi } from '../hooks/useTransactionsApi';
 
 const Home = () => {
 	const [transactions, setTransactions] = useState([]);
 	const [balance, setBalance] = useState(0);
 	const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
 
-	// Carrega as transações ao montar o componente
 	useEffect(() => {
 		fetchTransactions().then(data => {
 			setTransactions(data.filter(t => t.type === 'expense'));
@@ -19,7 +18,6 @@ const Home = () => {
 		});
 	}, []);
 
-	// Adiciona uma transação e faz fetch novamente
 	const handleAddTransaction = async newTransaction => {
 		await addTransaction(newTransaction);
 		const data = await fetchTransactions();
@@ -28,7 +26,6 @@ const Home = () => {
 		setBalance(saldo);
 	};
 
-	// Edita uma transação e faz fetch novamente
 	const handleEditTransaction = async (id, updatedTransaction) => {
 		await editTransaction(id, updatedTransaction);
 		const data = await fetchTransactions();
@@ -37,7 +34,6 @@ const Home = () => {
 		setBalance(saldo);
 	};
 
-	// Remove uma transação e faz fetch novamente
 	const handleRemoveTransaction = async id => {
 		await removeTransaction(id);
 		const data = await fetchTransactions();
