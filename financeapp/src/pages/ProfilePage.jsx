@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
 	const navigate = useNavigate();
-
-	// Estado para armazenar os dados do perfil
-	const [user, setUser] = useState({
-		name: 'João ',
-		email: 'joao@joao.com',
-		joinedDate: '2025-04-01',
-	});
+	const { user, isLoaded } = useUser();
 
 	// Estado para controlar o formulário de edição
 	const [isEditing, setIsEditing] = useState(false);
 	const [formData, setFormData] = useState({
-		name: user.name,
-		email: user.email,
+		name: '',
+		email: '',
 	});
 
-	// Lidar com mudanças no formulário
+	React.useEffect(() => {
+		if (user) {
+			setFormData({
+				name: user.fullName || '',
+				email: user.primaryEmailAddress?.emailAddress || '',
+			});
+		}
+	}, [user]);
+
 	const handleChange = e => {
 		const { name, value } = e.target;
 		setFormData({
@@ -28,24 +31,32 @@ const ProfilePage = () => {
 		});
 	};
 
-	// Salvar as alterações
-	const handleSave = () => {
-		setUser({
-			...user,
-			name: formData.name,
-			email: formData.email,
-		});
+	const handleSave = async () => {
+		if (user) {
+			await user.update({
+				fullName: formData.name,
+			});
+			if (formData.email !== user.primaryEmailAddress?.emailAddress) {
+				await user.createEmailAddress({ email: formData.email });
+				// Opcional: pode pedir verificação do novo email
+			}
+		}
 		setIsEditing(false);
 	};
 
-	// Cancelar a edição
 	const handleCancel = () => {
-		setFormData({
-			name: user.name,
-			email: user.email,
-		});
+		if (user) {
+			setFormData({
+				name: user.fullName || '',
+				email: user.primaryEmailAddress?.emailAddress || '',
+			});
+		}
 		setIsEditing(false);
 	};
+
+	if (!isLoaded) {
+		return <div>Carregando perfil...</div>;
+	}
 
 	return (
 		<div className='profile-page'>
@@ -73,13 +84,13 @@ const ProfilePage = () => {
 				) : (
 					<>
 						<p>
-							<strong>Nome:</strong> {user.name}
+							<strong>Nome:</strong> {user.fullName}
 						</p>
 						<p>
-							<strong>Email:</strong> {user.email}
+							<strong>Email:</strong> {user.primaryEmailAddress?.emailAddress}
 						</p>
 						<p>
-							<strong>Data de Registro:</strong> {new Date(user.joinedDate).toLocaleDateString('pt-PT')}
+							<strong>ID:</strong> {user.id}
 						</p>
 						<div className='profile-actions'>
 							<button onClick={() => setIsEditing(true)} className='edit-btn'>
