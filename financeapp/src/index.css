@@ -1,45 +1,90 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  background-color: #f0f2f5;
+	background-color: #f0f2f5;
 }
 
 .app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 .main-content {
-  flex: 1;
-  padding: 20px;
+	flex: 1;
+	padding: 20px;
 }
 
 .content-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+	max-width: 1200px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
 }
 
 @media (min-width: 992px) {
-  .content-wrapper {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .transaction-form {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  
-  .transaction-list {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
+	.content-wrapper {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.transaction-form {
+		grid-column: 1;
+		grid-row: 2;
+	}
+
+	.transaction-list {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+	}
+}
+
+body.dark-mode,
+body.dark-mode * {
+	color: #fff !important;
+}
+
+body.dark-mode .app-container,
+body.dark-mode .navbar,
+body.dark-mode .dashboard,
+body.dark-mode .transaction-form,
+body.dark-mode .transaction-list,
+body.dark-mode .profile-page,
+body.dark-mode .profile-card {
+	background-color: #23272b !important;
+	color: #e0e0e0 !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+	background-color: #23272b;
+	color: #e0e0e0;
+	border: 1px solid #444;
+}
+
+body.dark-mode .card,
+body.dark-mode .profile-card {
+	background-color: #23272b;
+	color: #e0e0e0;
+}
+
+.darkmode-btn {
+	background: none;
+	border: 1px solid #888;
+	color: inherit;
+	padding: 8px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 15px;
+	transition: background 0.2s;
+}
+.darkmode-btn:hover {
+	background: #333;
+	color: #fff;
 }

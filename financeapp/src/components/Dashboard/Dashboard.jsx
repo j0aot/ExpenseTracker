@@ -1,12 +1,7 @@
 import React from 'react';
-import { useFinance } from '../../context/FinanceContext';
 import './Dashboard.css';
 
-const Dashboard = () => {
-	const { getBalance, getCategoriesSummary } = useFinance();
-	const balance = getBalance();
-	const categories = getCategoriesSummary();
-
+const Dashboard = ({ balance }) => {
 	return (
 		<div className='dashboard'>
 			<h2>Resumo Financeiro</h2>
@@ -20,20 +15,6 @@ const Dashboard = () => {
 					</p>
 				</div>
 			</div>
-
-			{categories.length > 0 && (
-				<div className='categories-section'>
-					<h3>Gastos por Categoria</h3>
-					<div className='categories-list'>
-						{categories.map((category, index) => (
-							<div key={index} className='category-item'>
-								<span className='category-name'>{category.name}</span>
-								<span className='category-amount'>-{category.amount.toFixed(2)}€</span>
-							</div>
-						))}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 };

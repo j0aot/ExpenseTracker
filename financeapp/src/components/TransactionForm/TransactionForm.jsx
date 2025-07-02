@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useFinance } from '../../context/FinanceContext';
 import './TransactionForm.css';
 
-const TransactionForm = () => {
-	const { addTransaction } = useFinance();
+const TransactionForm = ({ addTransaction }) => {
 	const [formData, setFormData] = useState({
 		type: 'expense',
 		description: '',
@@ -27,17 +25,7 @@ const TransactionForm = () => {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-
-		const transaction = {
-			...formData,
-			id: Date.now(),
-			amount: parseFloat(formData.amount),
-			date: formData.date,
-		};
-
-		addTransaction(transaction);
-
-		// Reset form
+		addTransaction({ ...formData, id: Date.now() }); // Adiciona um ID único
 		setFormData({
 			type: 'expense',
 			description: '',
