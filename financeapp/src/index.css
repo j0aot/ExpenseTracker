@@ -9,6 +9,10 @@ body {
 	background-color: #f0f2f5;
 }
 
+body.dark-mode {
+	background-color: #181a1b !important;
+}
+
 .app-container {
 	display: flex;
 	flex-direction: column;
@@ -32,23 +36,71 @@ body {
 	.content-wrapper {
 		grid-template-columns: 1fr 1fr;
 	}
-
 	.transaction-form {
 		grid-column: 1;
 		grid-row: 2;
 	}
-
 	.transaction-list {
 		grid-column: 2;
 		grid-row: 1 / span 2;
 	}
 }
 
+/* Navbar */
+.navbar {
+	background-color: #3498db;
+	color: white;
+	padding: 15px 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: background 0.3s, color 0.3s;
+}
+body.dark-mode .navbar {
+	background-color: #181a1b !important;
+	color: #fff !important;
+}
+
+/* Navbar links */
+.navbar-links {
+	display: flex;
+	gap: 15px;
+}
+.navbar-links a {
+	color: white;
+	text-decoration: none;
+	font-weight: 500;
+}
+.navbar-links a:hover {
+	text-decoration: underline;
+}
+
+/* Dark mode button */
+.darkmode-btn {
+	background: #fff;
+	color: #23272b;
+	border: 1px solid #888;
+	padding: 8px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 15px;
+	transition: background 0.2s, color 0.2s;
+}
+body.dark-mode .darkmode-btn {
+	background: #23272b;
+	color: #fff;
+	border: 1px solid #888;
+}
+.darkmode-btn:hover {
+	background: #333;
+	color: #fff;
+}
+
+/* Dark mode global text */
 body.dark-mode,
 body.dark-mode * {
 	color: #fff !important;
 }
 
+/* Dark mode backgrounds */
 body.dark-mode .app-container,
 body.dark-mode .navbar,
 body.dark-mode .dashboard,
@@ -74,17 +126,13 @@ body.dark-mode .profile-card {
 	color: #e0e0e0;
 }
 
-.darkmode-btn {
-	background: none;
-	border: 1px solid #888;
-	color: inherit;
-	padding: 8px 16px;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 15px;
-	transition: background 0.2s;
+/* Utility classes */
+.card {
+	padding: 2em;
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.darkmode-btn:hover {
-	background: #333;
-	color: #fff;
+.read-the-docs {
+	color: #888;
 }

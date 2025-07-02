@@ -60,7 +60,7 @@ const TransactionForm = ({ addTransaction }) => {
 
 				<div className='form-group'>
 					<label>Valor (€)</label>
-					<input type='number' name='amount' value={formData.amount} onChange={handleChange} min='0.01' step='0.01' required />
+					<input type='number' name='amount' value={formData.amount} onChange={handleChange} min='1' step='1' required />
 				</div>
 
 				<div className='form-group'>
