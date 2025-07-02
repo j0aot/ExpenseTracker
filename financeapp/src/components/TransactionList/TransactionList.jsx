@@ -1,83 +1,48 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './TransactionList.css';
 
-const TransactionList = ({ transactions, editTransaction, removeTransaction }) => {
-	const [editingId, setEditingId] = useState(null);
-	const [editForm, setEditForm] = useState({
-		description: '',
-		amount: '',
-		category: '',
-		date: '',
-	});
-
-	const handleEditClick = transaction => {
-		setEditingId(transaction.id);
-		setEditForm({
-			description: transaction.description,
-			amount: transaction.amount,
-			category: transaction.category,
-			date: transaction.date,
-		});
+const TransactionList = ({ transactions, onDelete, onEdit }) => {
+	const formatCurrency = amount => {
+		return new Intl.NumberFormat('pt-PT', {
+			style: 'currency',
+			currency: 'EUR',
+		}).format(amount);
 	};
 
-	const handleEditChange = e => {
-		const { name, value } = e.target;
-		setEditForm({
-			...editForm,
-			[name]: value,
-		});
+	const formatCategory = category => {
+		return category.charAt(0).toUpperCase() + category.slice(1);
 	};
 
-	const handleEditSubmit = id => {
-		editTransaction(id, {
-			...editForm,
-			id,
-			type: 'expense', // Garantir que o tipo permaneça como 'expense'
-		});
-		setEditingId(null);
+	const formatDate = dateString => {
+		const date = new Date(dateString);
+		return date.toLocaleDateString('pt-PT');
 	};
 
 	return (
 		<div className='transaction-list'>
-			<h2>Transações</h2>
+			<h2>Transações Recentes</h2>
 			{transactions.length === 0 ? (
-				<p className='no-transactions'>Nenhuma transação encontrada.</p>
+				<p>Nenhuma transação registada</p>
 			) : (
-				<ul className='transactions'>
+				<ul>
 					{transactions.map(transaction => (
-						<li key={transaction.id} className={`transaction ${transaction.type}`}>
-							{editingId === transaction.id ? (
-								<div className='edit-form'>
-									<input type='text' name='description' value={editForm.description} onChange={handleEditChange} />
-									<input type='number' name='amount' value={editForm.amount} onChange={handleEditChange} min='0.01' step='0.01' />
-									<input type='date' name='date' value={editForm.date} onChange={handleEditChange} />
-									<div className='edit-actions'>
-										<button type='button' onClick={() => handleEditSubmit(transaction.id)} className='save-btn'>
-											Salvar
-										</button>
-										<button type='button' onClick={() => setEditingId(null)} className='cancel-btn'>
-											Cancelar
-										</button>
-									</div>
-								</div>
-							) : (
-								<>
-									<div className='transaction-info'>
-										<span className='description'>{transaction.description}</span>
-										<span className='category'>{transaction.category}</span>
-										<span className='date'>{new Date(transaction.date).toLocaleDateString('pt-PT')}</span>
-										<span className={`amount ${transaction.type}`}>-{parseFloat(transaction.amount).toFixed(2)}€</span>
-									</div>
-									<div className='transaction-actions'>
-										<button onClick={() => handleEditClick(transaction)} className='edit-btn'>
-											Editar
-										</button>
-										<button onClick={() => removeTransaction(transaction.id)} className='delete-btn'>
-											Apagar
-										</button>
-									</div>
-								</>
-							)}
+						<li key={transaction.id} className={transaction.type}>
+							<div className='transaction-info'>
+								<span className='description'>{transaction.description}</span>
+								<span className='category'>{formatCategory(transaction.category)}</span>
+								<span className='date'>{formatDate(transaction.date)}</span>
+							</div>
+							<div className='transaction-amount'>
+								<span>{formatCurrency(transaction.type === 'expense' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount))}</span>
+							</div>
+							<div className='transaction-actions'>
+								<button onClick={() => onEdit(transaction)} className='edit-btn'>
+									Editar
+								</button>
+								<button onClick={() => onDelete(transaction.id)} className='delete-btn'>
+									Eliminar
+								</button>
+							</div>
 						</li>
 					))}
 				</ul>

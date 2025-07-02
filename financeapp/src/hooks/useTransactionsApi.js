@@ -8,7 +8,17 @@ export function useTransactionsApi() {
 		const res = await fetch('/api/transactions', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
-		return res.json();
+		const contentType = res.headers.get('content-type');
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(text);
+		}
+		if (contentType && contentType.includes('application/json')) {
+			return res.json();
+		} else {
+			const text = await res.text();
+			throw new Error('Resposta inesperada da API: ' + text);
+		}
 	};
 
 	const addTransaction = async data => {
@@ -21,7 +31,17 @@ export function useTransactionsApi() {
 			},
 			body: JSON.stringify(data),
 		});
-		return res.json();
+		const contentType = res.headers.get('content-type');
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(text);
+		}
+		if (contentType && contentType.includes('application/json')) {
+			return res.json();
+		} else {
+			const text = await res.text();
+			throw new Error('Resposta inesperada da API: ' + text);
+		}
 	};
 
 	const editTransaction = async (id, data) => {
@@ -34,7 +54,17 @@ export function useTransactionsApi() {
 			},
 			body: JSON.stringify(data),
 		});
-		return res.json();
+		const contentType = res.headers.get('content-type');
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(text);
+		}
+		if (contentType && contentType.includes('application/json')) {
+			return res.json();
+		} else {
+			const text = await res.text();
+			throw new Error('Resposta inesperada da API: ' + text);
+		}
 	};
 
 	const removeTransaction = async id => {
@@ -43,7 +73,17 @@ export function useTransactionsApi() {
 			method: 'DELETE',
 			headers: { Authorization: `Bearer ${token}` },
 		});
-		return res.json();
+		const contentType = res.headers.get('content-type');
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(text);
+		}
+		if (contentType && contentType.includes('application/json')) {
+			return res.json();
+		} else {
+			const text = await res.text();
+			throw new Error('Resposta inesperada da API: ' + text);
+		}
 	};
 
 	return { fetchTransactions, addTransaction, editTransaction, removeTransaction };
