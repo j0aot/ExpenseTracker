@@ -7,9 +7,9 @@ const ProfilePage = () => {
 
 	// Estado para armazenar os dados do perfil
 	const [user, setUser] = useState({
-		name: 'João Silva',
-		email: 'joao.silva@example.com',
-		joinedDate: '2023-01-01',
+		name: 'João ',
+		email: 'joao@joao.com',
+		joinedDate: '2025-04-01',
 	});
 
 	// Estado para controlar o formulário de edição
