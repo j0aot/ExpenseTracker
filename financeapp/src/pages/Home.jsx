@@ -10,6 +10,7 @@ const Home = ({ showToast }) => {
 	const [balance, setBalance] = useState(0);
 	const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
 
+	// Carrega as transações ao montar o componente
 	useEffect(() => {
 		fetchTransactions().then(data => {
 			setTransactions(data.filter(t => t.type === 'expense'));
@@ -18,26 +19,30 @@ const Home = ({ showToast }) => {
 		});
 	}, []);
 
+	// Adiciona uma transação e faz fetch novamente
 	const handleAddTransaction = async newTransaction => {
-		const saved = await addTransaction(newTransaction);
-		if (saved.type === 'expense') {
-			setTransactions(prev => [...prev, saved]);
+		await addTransaction(newTransaction);
+		const data = await fetchTransactions();
+		setTransactions(data.filter(t => t.type === 'expense'));
+		if (newTransaction.type === 'expense') {
 			showToast && showToast('Despesa adicionada!');
-		} else if (saved.type === 'income') {
+		} else if (newTransaction.type === 'income') {
 			showToast && showToast('Receita adicionada!');
 		}
-		setBalance(prev => (saved.type === 'income' ? prev + parseFloat(saved.amount) : prev - parseFloat(saved.amount)));
+		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+		setBalance(saldo);
 	};
 
+	// Edita uma transação e faz fetch novamente
 	const handleEditTransaction = async (id, updatedTransaction) => {
-		const updated = await editTransaction(id, updatedTransaction);
-		setTransactions(prev => prev.map(t => (t._id === id ? updated : t)));
+		await editTransaction(id, updatedTransaction);
 		const data = await fetchTransactions();
 		setTransactions(data.filter(t => t.type === 'expense'));
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 		setBalance(saldo);
 	};
 
+	// Remove uma transação e faz fetch novamente
 	const handleRemoveTransaction = async id => {
 		await removeTransaction(id);
 		const data = await fetchTransactions();
