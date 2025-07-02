@@ -13,24 +13,21 @@ const Home = () => {
 	useEffect(() => {
 		fetchTransactions().then(data => {
 			setTransactions(data.filter(t => t.type === 'expense'));
-			// Calcula o saldo: receitas - despesas
 			const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 			setBalance(saldo);
 		});
 	}, []);
 
 	const handleAddTransaction = async newTransaction => {
-		const saved = await addTransaction(newTransaction);
-		if (saved.type === 'expense') {
-			setTransactions(prev => [...prev, saved]);
-		}
-		setBalance(prev => (saved.type === 'income' ? prev + parseFloat(saved.amount) : prev - parseFloat(saved.amount)));
+		await addTransaction(newTransaction);
+		const data = await fetchTransactions();
+		setTransactions(data.filter(t => t.type === 'expense'));
+		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+		setBalance(saldo);
 	};
 
 	const handleEditTransaction = async (id, updatedTransaction) => {
-		const updated = await editTransaction(id, updatedTransaction);
-		setTransactions(prev => prev.map(t => (t._id === id ? updated : t)));
-		// Recomenda-se recarregar todas as transações e recalcular saldo após edição
+		await editTransaction(id, updatedTransaction);
 		const data = await fetchTransactions();
 		setTransactions(data.filter(t => t.type === 'expense'));
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);

@@ -25,7 +25,7 @@ const TransactionForm = ({ addTransaction }) => {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-		addTransaction({ ...formData, id: Date.now() }); // Adiciona um ID único
+		addTransaction(formData); // Não adicionar id manualmente!
 		setFormData({
 			type: 'expense',
 			description: '',

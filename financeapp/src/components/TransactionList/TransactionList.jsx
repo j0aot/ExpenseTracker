@@ -26,7 +26,7 @@ const TransactionList = ({ transactions, onDelete, onEdit }) => {
 			) : (
 				<ul>
 					{transactions.map(transaction => (
-						<li key={transaction.id} className={transaction.type}>
+						<li key={transaction._id} className={transaction.type}>
 							<div className='transaction-info'>
 								<span className='description'>{transaction.description}</span>
 								<span className='category'>{formatCategory(transaction.category)}</span>
@@ -39,7 +39,7 @@ const TransactionList = ({ transactions, onDelete, onEdit }) => {
 								<button onClick={() => onEdit(transaction)} className='edit-btn'>
 									Editar
 								</button>
-								<button onClick={() => onDelete(transaction.id)} className='delete-btn'>
+								<button onClick={() => onDelete(transaction._id)} className='delete-btn'>
 									Eliminar
 								</button>
 							</div>
