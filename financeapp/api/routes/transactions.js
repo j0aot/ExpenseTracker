@@ -3,7 +3,7 @@ import Transaction from '../models/Transaction.js';
 
 const router = express.Router();
 
-// Todas as rotas abaixo estão protegidas pelo middleware de autenticação
+// Buscar todas as transações do usuário autenticado
 router.get('/', async (req, res) => {
 	try {
 		const userId = req.auth.userId;
@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
+// Criar uma nova transação para o usuário autenticado
 router.post('/', async (req, res) => {
 	try {
 		const userId = req.auth.userId;
@@ -26,6 +27,7 @@ router.post('/', async (req, res) => {
 	}
 });
 
+// Atualizar uma transação do usuário autenticado
 router.put('/:id', async (req, res) => {
 	try {
 		const userId = req.auth.userId;
@@ -39,6 +41,7 @@ router.put('/:id', async (req, res) => {
 	}
 });
 
+// Remover uma transação do usuário autenticado
 router.delete('/:id', async (req, res) => {
 	try {
 		const userId = req.auth.userId;
