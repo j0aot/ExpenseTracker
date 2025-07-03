@@ -37,7 +37,6 @@ const ProfilePage = () => {
 			}
 			if (formData.email !== user.primaryEmailAddress?.emailAddress) {
 				await user.createEmailAddress({ email: formData.email });
-				// Opcional: pode pedir verificação do novo email
 			}
 		}
 		setIsEditing(false);
