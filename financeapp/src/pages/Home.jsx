@@ -12,7 +12,8 @@ const Home = () => {
 
 	useEffect(() => {
 		fetchTransactions().then(data => {
-			setTransactions(data.filter(t => t.type === 'expense'));
+			console.log('Transações recebidas:', data);
+			setTransactions(data);
 			const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 			setBalance(saldo);
 		});
@@ -21,7 +22,7 @@ const Home = () => {
 	const handleAddTransaction = async newTransaction => {
 		await addTransaction(newTransaction);
 		const data = await fetchTransactions();
-		setTransactions(data.filter(t => t.type === 'expense'));
+		setTransactions(data);
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 		setBalance(saldo);
 	};
@@ -29,7 +30,7 @@ const Home = () => {
 	const handleEditTransaction = async (id, updatedTransaction) => {
 		await editTransaction(id, updatedTransaction);
 		const data = await fetchTransactions();
-		setTransactions(data.filter(t => t.type === 'expense'));
+		setTransactions(data);
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 		setBalance(saldo);
 	};
@@ -37,7 +38,7 @@ const Home = () => {
 	const handleRemoveTransaction = async id => {
 		await removeTransaction(id);
 		const data = await fetchTransactions();
-		setTransactions(data.filter(t => t.type === 'expense'));
+		setTransactions(data);
 		const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
 		setBalance(saldo);
 	};
