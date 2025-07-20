@@ -1,6 +1,6 @@
-# novo
+# ExpenseTracker
 
-Projeto de final de curso da etic
+Projeto de final de curso da etic 2025
 
 Tecnologias usadas: 
 
