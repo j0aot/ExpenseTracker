@@ -15,9 +15,13 @@ const Home = () => {
 	};
 
 	const atualizarDados = async () => {
-		const data = await fetchTransactions();
-		setTransactions(data);
-		setBalance(calcularSaldo(data));
+		try {
+			const data = await fetchTransactions();
+			setTransactions(data);
+			setBalance(calcularSaldo(data));
+		} catch (err) {
+			console.error('Erro ao buscar transações:', err);
+		}
 	};
 
 	useEffect(() => {
@@ -25,18 +29,30 @@ const Home = () => {
 	}, []);
 
 	const handleAddTransaction = async newTransaction => {
-		await addTransaction(newTransaction);
-		await atualizarDados();
+		try {
+			await addTransaction(newTransaction);
+			await atualizarDados();
+		} catch (err) {
+			console.error('Erro ao adicionar transação:', err);
+		}
 	};
 
 	const handleEditTransaction = async (id, updatedTransaction) => {
-		await editTransaction(id, updatedTransaction);
-		await atualizarDados();
+		try {
+			await editTransaction(id, updatedTransaction);
+			await atualizarDados();
+		} catch (err) {
+			console.error('Erro ao editar transação:', err);
+		}
 	};
 
 	const handleRemoveTransaction = async id => {
-		await removeTransaction(id);
-		await atualizarDados();
+		try {
+			await removeTransaction(id);
+			await atualizarDados();
+		} catch (err) {
+			console.error('Erro ao remover transação:', err);
+		}
 	};
 
 	return (

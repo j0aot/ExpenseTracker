@@ -12,22 +12,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexão com o MongoDB
 mongoose
-	.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+	.connect(process.env.MONGODB_URI)
 	.then(() => console.log('MongoDB connected'))
 	.catch(err => console.error(err));
 
-// Rotas - o proxy do Vite redireciona /api para cá
-// O frontend chama /api/transactions → proxy envia para backend /api/transactions
 app.use('/api/transactions', ClerkExpressRequireAuth(), transactionsRouter);
 
-// Rota raiz para teste
 app.get('/', (req, res) => {
 	res.send('API FinanceApp');
 });
 
-// Handler para Vercel Serverless Function
 export default function handler(req, res) {
 	return app(req, res);
 }
