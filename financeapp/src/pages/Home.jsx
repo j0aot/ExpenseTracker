@@ -6,59 +6,51 @@ import TransactionForm from '../components/TransactionForm/TransactionForm';
 import TransactionList from '../components/TransactionList/TransactionList';
 
 const Home = () => {
-    const [transactions, setTransactions] = useState([]);
-    const [balance, setBalance] = useState(0);
-    const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
+	const [transactions, setTransactions] = useState([]);
+	const [balance, setBalance] = useState(0);
+	const { fetchTransactions, addTransaction, editTransaction, removeTransaction } = useTransactionsApi();
 
-    useEffect(() => {
-        fetchTransactions().then(data => {
-            console.log('Transações recebidas:', data);
-            setTransactions(data);
-            const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
-            setBalance(saldo);
-        });
-    }, []);
+	const calcularSaldo = data => {
+		return data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
+	};
 
-    const handleAddTransaction = async newTransaction => {
-        await addTransaction(newTransaction);
-        const data = await fetchTransactions();
-        setTransactions(data);
-        const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
-        setBalance(saldo);
-    };
+	const atualizarDados = async () => {
+		const data = await fetchTransactions();
+		setTransactions(data);
+		setBalance(calcularSaldo(data));
+	};
 
-    const handleEditTransaction = async (id, updatedTransaction) => {
-        await editTransaction(id, updatedTransaction);
-        const data = await fetchTransactions();
-        setTransactions(data);
-        const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
-        setBalance(saldo);
-    };
+	useEffect(() => {
+		atualizarDados();
+	}, []);
 
-    const handleRemoveTransaction = async id => {
-        await removeTransaction(id);
-        const data = await fetchTransactions();
-        setTransactions(data);
-        const saldo = data.reduce((acc, t) => (t.type === 'income' ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount)), 0);
-        setBalance(saldo);
-    };
+	const handleAddTransaction = async newTransaction => {
+		await addTransaction(newTransaction);
+		await atualizarDados();
+	};
 
-    return (
-        <div className='app-container'>
-            <Navbar />
-            <main className='main-content'>
-                <div className='content-wrapper'>
-                    <Dashboard balance={balance} />
-                    <TransactionForm addTransaction={handleAddTransaction} />
-                    <TransactionList
-                        transactions={transactions}
-                        onEdit={handleEditTransaction}       {/* ← corrigido */}
-                        onDelete={handleRemoveTransaction}   {/* ← corrigido */}
-                    />
-                </div>
-            </main>
-        </div>
-    );
+	const handleEditTransaction = async (id, updatedTransaction) => {
+		await editTransaction(id, updatedTransaction);
+		await atualizarDados();
+	};
+
+	const handleRemoveTransaction = async id => {
+		await removeTransaction(id);
+		await atualizarDados();
+	};
+
+	return (
+		<div className='app-container'>
+			<Navbar />
+			<main className='main-content'>
+				<div className='content-wrapper'>
+					<Dashboard balance={balance} />
+					<TransactionForm addTransaction={handleAddTransaction} />
+					<TransactionList transactions={transactions} onEdit={handleEditTransaction} onDelete={handleRemoveTransaction} />
+				</div>
+			</main>
+		</div>
+	);
 };
 
 export default Home;

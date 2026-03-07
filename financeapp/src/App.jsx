@@ -21,7 +21,7 @@ const App = () => {
 		<Router>
 			<div style={{ textAlign: 'right', padding: '10px 20px' }}>
 				<button onClick={() => setDarkMode(prev => !prev)} className='darkmode-btn'>
-					{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+					{darkMode ? ' Light Mode' : ' Dark Mode'}
 				</button>
 			</div>
 			<Routes>

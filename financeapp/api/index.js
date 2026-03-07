@@ -18,8 +18,9 @@ mongoose
 	.then(() => console.log('MongoDB connected'))
 	.catch(err => console.error(err));
 
-// Middleware de autenticação e rotas
-app.use('/transactions', ClerkExpressRequireAuth(), transactionsRouter);
+// Rotas - o proxy do Vite redireciona /api para cá
+// O frontend chama /api/transactions → proxy envia para backend /api/transactions
+app.use('/api/transactions', ClerkExpressRequireAuth(), transactionsRouter);
 
 // Rota raiz para teste
 app.get('/', (req, res) => {

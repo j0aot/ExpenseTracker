@@ -36,7 +36,7 @@ const TransactionList = ({ transactions, onDelete, onEdit }) => {
 								<span>{formatCurrency(transaction.type === 'expense' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount))}</span>
 							</div>
 							<div className='transaction-actions'>
-								<button onClick={() => onEdit(transaction)} className='edit-btn'>
+								<button onClick={() => onEdit(transaction._id, transaction)} className='edit-btn'>
 									Editar
 								</button>
 								<button onClick={() => onDelete(transaction._id)} className='delete-btn'>
